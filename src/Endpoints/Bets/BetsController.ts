@@ -4,7 +4,7 @@ import BetsService from './BetsService';
 import DB from '../../Core/DB';
 import { createFilter } from 'odata-v4-mysql'
 import Validator from '../../Core/Validator';
-import { betsPostSchema, betsPutSchema } from './BetsSchema';
+import { betsPostSchema, betsPutSchema, betsDeleteSchema } from './BetsSchema';
 
 @autoInjectable()
 export default class BetsController {
@@ -37,8 +37,8 @@ export default class BetsController {
       const payload = req.body;
       const errors = await Validator.getErrors(betsPostSchema, payload);
 
-      if(errors.length) {
-          res.status(400).send({ errors });
+      if(errors.errorMessages.length) {
+          res.status(errors.status).send({ errors });
       } else {
         const where = { id: payload.id };
         delete payload.id;
@@ -54,11 +54,27 @@ export default class BetsController {
     this.router.put('/', async (req, res) => {
       const errors = await Validator.getErrors(betsPutSchema, req.body);
 
-      if(errors.length) {
-          res.status(400).send({ errors });
+      if(errors.errorMessages.length) {
+          res.status(errors.status).send({ errors });
       } else {
         this.db.insert('bet', req.body).then(() => {
           res.send({ message: 'Bet Added' });
+        }).catch(err => {
+          // 500 error; Should not happen
+          res.status(500).send(err)
+        });
+      }
+    });
+
+    this.router.delete('/', async (req, res) => {
+      const errors = await Validator.getErrors(betsDeleteSchema, req.body);
+
+      console.log(req.body);
+      if(errors.errorMessages.length) {
+          res.status(errors.status).send({ errors });
+      } else {
+        this.db.remove('bet', { id: req.body.id }).then(() => {
+          res.send({ message: 'Bet deleted' });
         }).catch(err => {
           // 500 error; Should not happen
           res.status(500).send(err)
