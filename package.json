@@ -1,0 +1,29 @@
+{
+  "name": "alexcalauz-node-api",
+  "version": "0.4.1",
+  "description": "A simple api built using Node.JS and Postgres",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+  },
+  "author": "Alex Calauz; Andrei Radulescu",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.14.31",
+    "nodemon": "^2.0.7",
+    "sinon": "^9.2.4",
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.17.1",
+    "i": "^0.3.7",
+    "mysql": "^2.18.1",
+    "npm": "^8.11.0",
+    "odata-v4-mysql": "^0.1.1",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.4.0"
+  }
+}
