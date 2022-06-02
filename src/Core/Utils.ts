@@ -21,4 +21,11 @@ export default class Utils {
     }
   }
 
+  static getODataResponse(data, req, namespace) {
+    return {
+      '@odata.context': req.protocol + '://' + req.get('host') + Config.path + '/$metadata#' + namespace,
+      data
+    }
+  }
+
 }

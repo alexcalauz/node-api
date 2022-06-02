@@ -5,6 +5,8 @@ import DB from '../../Core/DB';
 import { createFilter } from 'odata-v4-mysql'
 import Validator from '../../Core/Validator';
 import { betsPostSchema, betsPutSchema, betsDeleteSchema } from './BetsSchema';
+import Utils from '../../Core/Utils';
+import { IBet } from '../../interfaces';
 
 @autoInjectable()
 export default class BetsController {
@@ -24,18 +26,15 @@ export default class BetsController {
       const filter = createFilter(req.query.$filter);
       const query = `SELECT * FROM bet WHERE ${filter.where}`;
       this.db.query(query, filter).then((data) => {
-        res.send({
-          '@odata.context': req.protocol + '://' + req.get('host') + '/api/$metadata#Users',
-          value: data
-        });
+        res.send(Utils.getODataResponse(data, req, 'Bets'));
       }).catch(err => {
-        res.status(400).send(err);
+        res.status(500).send(err);
       })
     });
 
-    this.router.post('/', async (req, res) => {
-      const payload = req.body;
-      const errors = await Validator.getErrors(betsPostSchema, payload);
+    this.router.put('/', async (req, res) => {
+      const payload: IBet = req.body;
+      const errors = await Validator.getErrors(betsPutSchema, payload);
 
       if(errors.errorMessages.length) {
           res.status(errors.status).send({ errors });
@@ -49,15 +48,16 @@ export default class BetsController {
           res.status(500).send(err)
         });
       }
-    });
+    })
 
-    this.router.put('/', async (req, res) => {
-      const errors = await Validator.getErrors(betsPutSchema, req.body);
+    this.router.post('/', async (req, res) => {
+      const payload: IBet = req.body;
+      const errors = await Validator.getErrors(betsPostSchema, req.body);
 
       if(errors.errorMessages.length) {
           res.status(errors.status).send({ errors });
       } else {
-        this.db.insert('bet', req.body).then(() => {
+        this.db.insert('bet', payload).then(() => {
           res.send({ message: 'Bet Added' });
         }).catch(err => {
           // 500 error; Should not happen
@@ -67,13 +67,13 @@ export default class BetsController {
     });
 
     this.router.delete('/', async (req, res) => {
+      const payload: IBet = req.body;
       const errors = await Validator.getErrors(betsDeleteSchema, req.body);
 
-      console.log(req.body);
       if(errors.errorMessages.length) {
           res.status(errors.status).send({ errors });
       } else {
-        this.db.remove('bet', { id: req.body.id }).then(() => {
+        this.db.remove('bet', payload).then(() => {
           res.send({ message: 'Bet deleted' });
         }).catch(err => {
           // 500 error; Should not happen

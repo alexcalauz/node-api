@@ -4,8 +4,7 @@
   "description": "A simple api built using Node.JS and Postgres",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
   },
   "author": "Alex Calauz; Andrei Radulescu",
   "license": "ISC",

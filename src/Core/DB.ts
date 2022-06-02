@@ -11,7 +11,6 @@ export default class DB {
     this.connection = mysql.createConnection(params);
     this.connection.connect((err) => {
       if (err) throw err;
-      console.log('Connected!');
     });
   }
 
@@ -30,6 +29,21 @@ export default class DB {
     const columns = Object.keys(row).join(', ');
     const values = Object.values(row).map(value => typeof(value) === 'string' ? `'${value}'` : value).join(', ');
     const q = `INSERT INTO \`${tableName}\` (${columns}) VALUES (${values})`;
+    return this.query(q);
+  }
+
+  insertMultiple(tableName, rows) {
+    if(!Array.isArray(rows)) {
+      rows = [rows];
+    }
+    const columns = Object.keys(rows[0]).join(', ');
+    const values = rows.map(row => {
+      return Object.values(row).join(',')
+    }).map(mappedRow => {
+      return `(${mappedRow})`
+    }).join(',');
+
+    const q = `INSERT INTO ${tableName} (${columns}) VALUES ${values}`;
     return this.query(q);
   }
 

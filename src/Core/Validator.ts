@@ -3,27 +3,28 @@ import Validators from "./Validators";
 export default class Validator {
 
   static async getErrors(model, object): Promise<any> {
-    const errors = {
+    const errorObject = {
       errorMessages: [],
       status: 400,
     };
     for (let i in model) {
+      // For each Field
       const field = model[i];
       for (let j in field) {
+        // For each Validator in Field
         const validation = field[j];
-        console.log(validation.validator, Validators.required);
         if(!object[i] && validation.validator !== Validators.required) {
           continue;
         }
         const errorMessage = await validation.validator(object[i], validation.errorMessage, validation.param);
         if(errorMessage) {
           if(validation.validator === Validators.existsInDb) {
-            errors.status = 404;
+            errorObject.status = 404;
           }
-          errors.errorMessages.push(errorMessage);
+          errorObject.errorMessages.push(errorMessage);
         }
       }
     }
-    return errors;
+    return errorObject;
   }
 }

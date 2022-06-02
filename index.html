@@ -24,7 +24,7 @@
               'Content-Type': 'application/json'
             },
             method: 'PUT',
-            body: JSON.stringify({ userId: 123, subscriptionType: 50, totalQuota: 13 })
+            body: JSON.stringify({ id: 1, totalQuota: 1.2343, userId: 12 })
         })
           .then(response => response.json())
           .then(data => {
@@ -39,7 +39,7 @@
               'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify({ id: 1, totalQuota: 1.2343, userId: 12 })
+            body: JSON.stringify({ userId: 123, subscriptionType: 50, totalQuota: 13 })
         })
           .then(response => response.json())
           .then(data => {

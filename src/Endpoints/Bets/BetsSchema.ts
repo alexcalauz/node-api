@@ -1,6 +1,6 @@
 import Validators from './../../Core/Validators';
 
-export const betsPutSchema = {
+export const betsPostSchema = {
   id: [
     {
       validator: Validators.excluded,
@@ -34,7 +34,7 @@ export const betsPutSchema = {
   ],
 }
 
-export const betsPostSchema = {
+export const betsPutSchema = {
   id: [
     {
       validator: Validators.required,
